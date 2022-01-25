@@ -15,15 +15,23 @@ class CounterBloc {
   final _counterEventController = StreamController<CounterEvent>();
 
   /// A sink and stream for each controller
-  StreamSink<CounterState> get _counterStateSink => _counterStateController.sink;
+  StreamSink<CounterState> get _counterStateSink =>
+      _counterStateController.sink;
+
   Stream<CounterState> get counterStateStream => _counterStateController.stream;
 
-  Stream<CounterEvent> get _counterEventStream => _counterEventController.stream;
+  // Stream<CounterEvent> get _counterEventStream => _counterEventController.stream;
   Sink<CounterEvent> get counterEventSink => _counterEventController.sink;
 
   void _mapEventToState(CounterEvent event) {
     if (event == CounterEvent.incrementEvent) _counterState.counter++;
     if (event == CounterEvent.decrementEvent) _counterState.counter--;
+
+    _counterState.errorMessage = null;
+    if (_counterState.counter < 0) {
+      _counterState.counter = 0;
+      _counterState.errorMessage = "Cannot reduce below zero.";
+    }
     _counterStateSink.add(_counterState);
   }
 

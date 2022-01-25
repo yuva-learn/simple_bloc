@@ -29,7 +29,6 @@ class _SimpleCounterScreenState extends State<SimpleCounterScreen> {
         initialData: counterState,
         stream: counterBloc.counterStateStream,
         builder: (BuildContext context, AsyncSnapshot<CounterState> snapshot) {
-          print("Stream incoming: ${snapshot}");
           return _getUIWidget(snapshot.data);
         },
       ),
@@ -68,6 +67,12 @@ class _SimpleCounterScreenState extends State<SimpleCounterScreen> {
             '${counterState?.counter}',
             style: Theme.of(context).textTheme.headline1,
           ),
+          counterState?.errorMessage != null
+              ? Text(
+                  "${counterState?.errorMessage}",
+                  style: TextStyle(color: Colors.red, fontSize: 14),
+                )
+              : Container()
         ],
       ),
     );
