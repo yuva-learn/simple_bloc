@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:my_bloc/simple_bloc_counter/counter_state.dart';
 
 class CounterBloc {
+  final CounterState _counterState;
+
   CounterBloc(this._counterState) {
     // Whenever there is a new event, we want to map it to a new state
     _counterEventController.stream.listen(_mapEventToState);
   }
 
-  CounterState _counterState;
-
-  /// Two controllers
+  /// Two controllers one for handling state and one for handling event
   final _counterStateController = StreamController<CounterState>();
   final _counterEventController = StreamController<CounterEvent>();
 
@@ -24,6 +24,7 @@ class CounterBloc {
   Sink<CounterEvent> get counterEventSink => _counterEventController.sink;
 
   void _mapEventToState(CounterEvent event) {
+    /// Application logic comes here
     if (event == CounterEvent.incrementEvent) _counterState.counter++;
     if (event == CounterEvent.decrementEvent) _counterState.counter--;
 
@@ -32,6 +33,8 @@ class CounterBloc {
       _counterState.counter = 0;
       _counterState.errorMessage = "Cannot reduce below zero.";
     }
+
+    /// do not forget to push the state to the sink to get its value updates in the UI
     _counterStateSink.add(_counterState);
   }
 
